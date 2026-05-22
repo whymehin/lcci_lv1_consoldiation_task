@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LCCI Level 1 Bookkeeping - Consolidation Task</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .portal-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #34495e;
+            padding-bottom: 12px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .task-section {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 35px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+        .task-header {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #2980b9;
+            margin-bottom: 15px;
+            border-left: 6px solid #2980b9;
+            padding-left: 12px;
+        }
+        .instructions {
+            background-color: #f4f7f9;
+            border-left: 4px solid #3182ce;
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 25px;
+            font-size: 0.98em;
+            color: #2d3748;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+        }
+        .instructions p {
+            margin: 0 0 12px 0;
+        }
+        .instructions p:last-child {
+            margin-bottom: 0;
+        }
+        .instructions .task-highlight {
+            font-weight: 600;
+            color: #2b6cb0;
+            display: block;
+            margin-top: 8px;
+        }
+        .instructions .rule-highlight {
+            font-weight: 600;
+            color: #c53030;
+            display: block;
+            margin-top: 8px;
+        }
+        .instructions ul {
+            margin: 8px 0 0 0;
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        .instructions li:last-child {
+            margin-bottom: 0;
+        }
+        .resource-box {
+            background-color: #f7fafc;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+        }
+        .resource-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.05em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95em;
+        }
+        th, td {
+            border: 1px solid #cbd5e0;
+            padding: 10px 14px;
+            text-align: left;
+        }
+        th {
+            background-color: #f7fafc;
+            color: #4a5568;
+            font-weight: 600;
+        }
+        .num-col {
+            text-align: right;
+            width: 15%;
+        }
+        .input-cell-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .mark-badge {
+            font-size: 0.8em;
+            color: #e67e22;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        input[type="number"], input[type="text"], select {
+            width: 100%;
+            max-width: 220px;
+            padding: 8px;
+            border: 2px solid #cbd5e0;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 0.95em;
+            transition: all 0.2s ease;
+        }
+        input[type="number"]:focus, select:focus {
+            border-color: #3182ce;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(66,153,225,0.15);
+        }
+        .total-row {
+            font-weight: bold;
+            background-color: #edf2f7;
+        }
+        .submit-trigger {
+            background-color: #3182ce;
+            color: #ffffff;
+            border: none;
+            padding: 18px;
+            font-size: 1.15em;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(49,130,206,0.2);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .submit-trigger:hover {
+            background-color: #2b6cb0;
+        }
+        .submit-trigger:active {
+            transform: scale(0.995);
+        }
+        #summaryPortal {
+            display: none;
+            margin-top: 40px;
+            padding: 30px;
+            border-radius: 8px;
+            background-color: #f0fff4;
+            border: 2px solid #c6f6d5;
+        }
+        .g-distinction { color: #38a169; font-weight: bold; font-size: 1.3em; }
+        .g-merit { color: #3182ce; font-weight: bold; font-size: 1.3em; }
+        .g-pass { color: #d69e2e; font-weight: bold; font-size: 1.3em; }
+        .g-fail { color: #e53e3e; font-weight: bold; font-size: 1.3em; }
+        
+        /* Direct Cell Status Styles */
+        .cell-correct {
+            border-color: #2e7d32 !important;
+            background-color: #e8f5e9 !important;
+        }
+        .cell-incorrect {
+            border-color: #d32f2f !important;
+            background-color: #ffebee !important;
+        }
+        .inline-status {
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-left: 4px;
+            white-space: nowrap;
+        }
+        .c { color: #2e7d32; }
+        .i { color: #d32f2f; }
+    </style>
+</head>
+<body>
+
+<div class="container portal-container">
+    <h1>LCCI Level 1 Bookkeeping - Consolidation Assessment Portal</h1>
+    
+    <form id="consolidationForm">
+        
+        <div class="task-section">
+            <div class="task-header">Task 1: Trial Balance Verification (Sam Jackson / SJ Services)</div>
+            <div class="instructions">
+                <p>You have been provided with the following list of balances by Sam Jackson. She trades as a sole trader under the name of SJ Services and has a financial year end date of 31st December 20X5.</p>
+                <p><span class="task-highlight">Task: Prepare a trial balance as at 31st December 20X5 by inserting each balance in the table below in either the debit or credit column and total the trial balance. The trial balance should balance.</span></p>
+                <p><span class="rule-highlight">Please enter the value only and do not use any symbols, commas or full stops in your answer.</span></p>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Account Name</th>
+                        <th>Ledger Balance ($)</th>
+                        <th>Debit ($)</th>
+                        <th>Credit ($)</th>
+                    </tr>
+                </thead>
+                <tbody id="task1Body"></tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td>Totals</td>
+                        <td></td>
+                        <td>
+                            <div class="input-cell-container">
+                                <input type="number" id="t1_deb_total" placeholder="Total Dr">
+                                <span class="mark-badge">(1)</span>
+                                <span id="t1_deb_total_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-cell-container">
+                                <input type="number" id="t1_crd_total" placeholder="Total Cr">
+                                <span class="mark-badge">(1)</span>
+                                <span id="t1_crd_total_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="task-section">
+            <div class="task-header">Task 2: Trial Balance Verification (Jarvis / JB Joinery)</div>
+            <div class="instructions">
+                <p>Jarvis runs a small joinery business under the name of JB Joinery and has a financial year end of 31 December 20X2. The following list of account balances have been provided as at 31 December 20X2.</p>
+                <p><span class="task-highlight">Task: Prepare a trial balance as at 31st December 20X2 by inserting each balance in the table below in either the debit or credit column and total the trial balance. The trial balance should balance.</span></p>
+                <p><span class="rule-highlight">Please enter the value only and do not use any symbols, commas or full stops in your answer. All values should be entered as whole numbers only. Do not use any commas, full stops or symbols in your answer.</span></p>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Account Name</th>
+                        <th>Ledger Balance ($)</th>
+                        <th>Debit ($)</th>
+                        <th>Credit ($)</th>
+                    </tr>
+                </thead>
+                <tbody id="task2Body"></tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td>Totals</td>
+                        <td></td>
+                        <td>
+                            <div class="input-cell-container">
+                                <input type="number" id="t2_deb_total" placeholder="Total Dr">
+                                <span class="mark-badge">(1)</span>
+                                <span id="t2_deb_total_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-cell-container">
+                                <input type="number" id="t2_crd_total" placeholder="Total Cr">
+                                <span class="mark-badge">(1)</span>
+                                <span id="t2_crd_total_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="task-section">
+            <div class="task-header">Task 3: Statement of Profit or Loss Preparation (Classic Designs)</div>
+
+            <div class="instructions">
+                <p>Q3: 3) You have been provided with the following trial balance and additional information for Classic Designs, a sole trader business operated by Chandra Kim for the year ended 31 December 20X5.</p>
+                <p><span class="task-highlight">Task: Prepare a Statement of Profit or Loss for the year ending 31 December 20X5 using the template provided below.</span></p>
+            </div>
+            
+            <div class="resource-box">
+                <div class="resource-title">Resource Data: Trial Balance for Classic Designs (Chandra Kim)</div>
+                <p>Use the following structural trial balance metrics as of 31 December 20X5 to prepare the Statement of Profit or Loss:</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ledger Account</th>
+                            <th>Debit ($)</th>
+                            <th>Credit ($)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Plant and machinery (carrying value as at 31 December 20X5)</td><td>12365</td><td></td></tr>
+                        <tr><td>Office equipment (carrying value as at 31 December 20X5)</td><td>8675</td><td></td></tr>
+                        <tr><td>Trade receivables</td><td>3462</td><td></td></tr>
+                        <tr><td>Discounts allowed</td><td>200</td><td></td></tr>
+                        <tr><td>Opening equity as at 1 January 20X5</td><td></td><td>18000</td></tr>
+                        <tr><td>Loan (repayable 20X9)</td><td></td><td>8000</td></tr>
+                        <tr><td>Inventory (as at 1 January 20X5)</td><td>2200</td><td></td></tr>
+                        <tr><td>Bank</td><td>4381</td><td></td></tr>
+                        <tr><td>Sales revenue</td><td></td><td>84379</td></tr>
+                        <tr><td>Wages</td><td>16758</td><td></td></tr>
+                        <tr><td>Irrecoverable debt</td><td>150</td><td></td></tr>
+                        <tr><td>Cash</td><td>100</td><td></td></tr>
+                        <tr><td>Rent received</td><td></td><td>2000</td></tr>
+                        <tr><td>Returns inwards</td><td>1126</td><td></td></tr>
+                        <tr><td>Motor expenses</td><td>5236</td><td></td></tr>
+                        <tr><td>Depreciation charge - plant and machinery</td><td>2420</td><td></td></tr>
+                        <tr><td>Depreciation charge - office equipment</td><td>1450</td><td></td></tr>
+                        <tr><td>Rent expense</td><td>3000</td><td></td></tr>
+                        <tr><td>Trade payables</td><td></td><td>1871</td></tr>
+                        <tr><td>Purchases</td><td>21305</td><td></td></tr>
+                        <tr><td>Heat and light</td><td>1982</td><td></td></tr>
+                        <tr><td>Drawings</td><td>29440</td><td></td></tr>
+                        <tr style="font-weight: bold; background-color: #edf2f7;"><td>TOTALS</td><td>114250</td><td>114250</td></tr>
+                    </tbody>
+                </table>
+                <p><strong>Additional Information:</strong> Closing inventory for the year ending 31 December 20X5 has been valued at <strong>$1650</strong>.</p>
+            </div>
+
+            <div class="instructions">
+                <p><strong>Instructions for completing the task:</strong></p>
+                <ul>
+                    <li>You must use a minus sign at the front of any values which are to be deducted, for example, closing inventory, cost of goods sold, and the total of expenses. For example, closing inventory of 1500 should be entered in the cell in the following format -1500. You do not need to enter a minus sign at the front of the individual expenses; however, the total should use a minus sign.</li>
+                    <li>Do not use any symbols (e.g. $), full stops or commas in your answer except for the minus sign as indicated in the instructions.</li>
+                    <li>All descriptions should be entered using the drop-down options available in each box.</li>
+                </ul>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Account Metric Label</th>
+                        <th>Sub-total Column ($)</th>
+                        <th>Final Column ($)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="input-cell-container">
+                                <select id="t3_lbl_1" class="orange-set">
+                                    <option value="">Select Description...</option>
+                                    <option value="Sales revenue">Sales revenue</option>
+                                    <option value="Opening equity">Opening equity</option>
+                                    <option value="Returns inwards">Returns inwards</option>
+                                    <option value="Drawings">Drawings</option>
+                                    <option value="Rent received">Rent received</option>
+                                    <option value="Purchases">Purchases</option>
+                                </select>
+                                <span id="t3_lbl_1_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-cell-container">
+                                <input type="number" id="t3_val_1" placeholder="Value">
+                                <span class="mark-badge">(1)</span>
+                                <span id="t3_val_1_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="input-cell-container">
+                                <select id="t3_lbl_2" class="orange-set">
+                                    <option value="">Select Description...</option>
+                                    <option value="Sales revenue">Sales revenue</option>
+                                    <option value="Opening equity">Opening equity</option>
+                                    <option value="Returns inwards">Returns inwards</option>
+                                    <option value="Drawings">Drawings</option>
+                                    <option value="Rent received">Rent received</option>
+                                    <option value="Purchases">Purchases</option>
+                                </select>
+                                <span id="t3_lbl_2_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-cell-container">
+                                <input type="number" id="t3_val_2" placeholder="Value">
+                                <span class="mark-badge">(1)</span>
+                                <span id="t3_val_2_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="input-cell-container">
+                                <select id="t3_lbl_3" class="orange-set">
+                                    <option value="">Select Description...</option>
+                                    <option value="Sales revenue">Sales revenue</option>
+                                    <option value="Opening equity">Opening equity</option>
+                                    <option value="Returns inwards">Returns inwards</option>
+                                    <option value="Drawings">Drawings</option>
+                                    <option value="Rent received">Rent received</option>
+                                    <option value="Purchases">Purchases</option>
+                                </select>
+                                <span id="t3_lbl_3_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td></td>
+                        <td>
+                            <div class="input-cell-container">
+                                <input type="number" id="t3_val_3" placeholder="Value">
+                                <span class="mark-badge">(1)</span>
+                                <span id="t3_val_3_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr style="font-weight: bold; background-color: #f7fafc;">
+                        <td colspan="3">Less: Cost of sales</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="input-cell-container">
+                                <select id="t3_lbl_5" class="green-set">
+                                    <option value="">Select Description...</option>
+                                    <option value="Opening inventory">Opening inventory</option>
+                                    <option value="Purchases">Purchases</option>
+                                    <option value="Closing inventory">Closing inventory</option>
+                                    <option value="Rent received">Rent received</option>
+                                    <option value="Discounts allowed">Discounts allowed</option>
+                                    <option value="Bank">Bank</option>
+                                    <option value="Cash">Cash</option>
+                                </select>
+                                <span id="t3_lbl_5_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-cell-container">
+                                <input type="number" id="t3_val_5" placeholder="Value">
+                                <span class="mark-badge">(1)</span>
+                                <span id="t3_val_5_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="input-cell-container">
+                                <select id="t3_lbl_6" class="green-set">
+                                    <option value="">Select Description...</option>
+                                    <option value="Opening inventory">Opening inventory</option>
+                                    <option value="Purchases">Purchases</option>
+                                    <option value="Closing inventory">Closing inventory</option>
+                                    <option value="Rent received">Rent received</option>
+                                    <option value="Discounts allowed">Discounts allowed</option>
+                                    <option value="Bank">Bank</option>
+                                    <option value="Cash">Cash</option>
+                                </select>
+                                <span id="t3_lbl_6_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-cell-container">
+                                <input type="number" id="t3_val_6" placeholder="Value">
+                                <span class="mark-badge">(1)</span>
+                                <span id="t3_val_6_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="input-cell-container">
+                                <select id="t3_lbl_7" class="green-set">
+                                    <option value="">Select Description...</option>
+                                    <option value="Opening inventory">Opening inventory</option>
+                                    <option value="Purchases">Purchases</option>
+                                    <option value="Closing inventory">Closing inventory</option>
+                                    <option value="Rent received">Rent received</option>
+                                    <option value="Discounts allowed">Discounts allowed</option>
+                                    <option value="Bank">Bank</option>
+                                    <option value="Cash">Cash</option>
+                                </select>
+                                <span id="t3_lbl_7_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-cell-container">
+                                <input type="number" id="t3_val_7" placeholder="Value">
+                                <span class="mark-badge">(1)</span>
+                                <span id="t3_val_7_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;">Cost of sales</td>
+                        <td></td>
+                        <td>
+                            <div class="input-cell-container">
+                                <input type="number" id="t3_val_8" placeholder="Value">
+                                <span class="mark-badge">(1)</span>
+                                <span id="t3_val_8_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr style="font-weight: bold; background-color: #edf2f7;">
+                        <td>Gross profit</td>
+                        <td></td>
+                        <td>
+                            <div class="input-cell-container">
+                                <input type="number" id="t3_val_9" placeholder="Value">
+                                <span class="mark-badge">(1)</span>
+                                <span id="t3_val_9_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr style="font-weight: bold; background-color: #f7fafc;">
+                        <td colspan="3">Add other income</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="input-cell-container">
+                                <select id="t3_lbl_11" class="purple-set">
+                                    <option value="">Select Description...</option>
+                                    <option value="Discounts allowed">Discounts allowed</option>
+                                    <option value="Drawings">Drawings</option>
+                                    <option value="Rent received">Rent received</option>
+                                    <option value="Cash">Cash</option>
+                                    <option value="Loan">Loan</option>
+                                </select>
+                                <span id="t3_lbl_11_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td></td>
+                        <td>
+                            <div class="input-cell-container">
+                                <input type="number" id="t3_val_11" placeholder="Value">
+                                <span class="mark-badge">(1)</span>
+                                <span id="t3_val_11_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr style="font-weight: bold;">
+                        <td>Total Income Balance</td>
+                        <td></td>
+                        <td>
+                            <div class="input-cell-container">
+                                <input type="number" id="t3_val_12" placeholder="Value">
+                                <span class="mark-badge">(1)</span>
+                                <span id="t3_val_12_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr style="font-weight: bold; background-color: #f7fafc;">
+                        <td colspan="3">Less expenses</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="input-cell-container">
+                                <select id="t3_exp_lbl_1" class="blue-set">
+                                    <option value="">Select Description...</option>
+                                    <option value="Depreciation charge - plant and machinery">Depreciation charge - plant and machinery</option>
+                                    <option value="Heat and light">Heat and light</option>
+                                    <option value="Rent expense">Rent expense</option>
+                                    <option value="Office equipment (carrying value)">Office equipment (carrying value)</option>
+                                    <option value="Wages">Wages</option>
+                                    <option value="Rent received">Rent received</option>
+                                    <option value="Depreciation charge - office equipment">Depreciation charge - office equipment</option>
+                                    <option value="Motor expenses">Motor expenses</option>
+                                    <option value="Irrecoverable debt">Irrecoverable debt</option>
+                                    <option value="Plant and machinery (carrying value)">Plant and machinery (carrying value)</option>
+                                    <option value="Discounts allowed">Discounts allowed</option>
+                                </select>
+                                <span id="t3_exp_lbl_1_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-cell-container">
+                                <input type="number" id="t3_exp_val_1" placeholder="Value">
+                                <span class="mark-badge">(1)</span>
+                                <span id="t3_exp_val_1_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="input-cell-container">
+                                <select id="t3_exp_lbl_2" class="blue-set">
+                                    <option value="">Select Description...</option>
+                                    <option value="Depreciation charge - plant and machinery">Depreciation charge - plant and machinery</option>
+                                    <option value="Heat and light">Heat and light</option>
+                                    <option value="Rent expense">Rent expense</option>
+                                    <option value="Office equipment (carrying value)">Office equipment (carrying value)</option>
+                                    <option value="Wages">Wages</option>
+                                    <option value="Rent received">Rent received</option>
+                                    <option value="Depreciation charge - office equipment">Depreciation charge - office equipment</option>
+                                    <option value="Motor expenses">Motor expenses</option>
+                                    <option value="Irrecoverable debt">Irrecoverable debt</option>
+                                    <option value="Plant and machinery (carrying value)">Plant and machinery (carrying value)</option>
+                                    <option value="Discounts allowed">Discounts allowed</option>
+                                </select>
+                                <span id="t3_exp_lbl_2_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-cell-container">
+                                <input type="number" id="t3_exp_val_2" placeholder="Value">
+                                <span class="mark-badge">(1)</span>
+                                <span id="t3_exp_val_2_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="input-cell-container">
+                                <select id="t3_exp_lbl_3" class="blue-set">
+                                    <option value="">Select Description...</option>
+                                    <option value="Depreciation charge - plant and machinery">Depreciation charge - plant and machinery</option>
+                                    <option value="Heat and light">Heat and light</option>
+                                    <option value="Rent expense">Rent expense</option>
+                                    <option value="Office equipment (carrying value)">Office equipment (carrying value)</option>
+                                    <option value="Wages">Wages</option>
+                                    <option value="Rent received">Rent received</option>
+                                    <option value="Depreciation charge - office equipment">Depreciation charge - office equipment</option>
+                                    <option value="Motor expenses">Motor expenses</option>
+                                    <option value="Irrecoverable debt">Irrecoverable debt</option>
+                                    <option value="Plant and machinery (carrying value)">Plant and machinery (carrying value)</option>
+                                    <option value="Discounts allowed">Discounts allowed</option>
+                                </select>
+                                <span id="t3_exp_lbl_3_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-cell-container">
+                                <input type="number" id="t3_exp_val_3" placeholder="Value">
+                                <span class="mark-badge">(1)</span>
+                                <span id="t3_exp_val_3_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="input-cell-container">
+                                <select id="t3_exp_lbl_4" class="blue-set">
+                                    <option value="">Select Description...</option>
+                                    <option value="Depreciation charge - plant and machinery">Depreciation charge - plant and machinery</option>
+                                    <option value="Heat and light">Heat and light</option>
+                                    <option value="Rent expense">Rent expense</option>
+                                    <option value="Office equipment (carrying value)">Office equipment (carrying value)</option>
+                                    <option value="Wages">Wages</option>
+                                    <option value="Rent received">Rent received</option>
+                                    <option value="Depreciation charge - office equipment">Depreciation charge - office equipment</option>
+                                    <option value="Motor expenses">Motor expenses</option>
+                                    <option value="Irrecoverable debt">Irrecoverable debt</option>
+                                    <option value="Plant and machinery (carrying value)">Plant and machinery (carrying value)</option>
+                                    <option value="Discounts allowed">Discounts allowed</option>
+                                </select>
+                                <span id="t3_exp_lbl_4_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-cell-container">
+                                <input type="number" id="t3_exp_val_4" placeholder="Value">
+                                <span class="mark-badge">(1)</span>
+                                <span id="t3_exp_val_4_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="input-cell-container">
+                                <select id="t3_exp_lbl_5" class="blue-set">
+                                    <option value="">Select Description...</option>
+                                    <option value="Depreciation charge - plant and machinery">Depreciation charge - plant and machinery</option>
+                                    <option value="Heat and light">Heat and light</option>
+                                    <option value="Rent expense">Rent expense</option>
+                                    <option value="Office equipment (carrying value)">Office equipment (carrying value)</option>
+                                    <option value="Wages">Wages</option>
+                                    <option value="Rent received">Rent received</option>
+                                    <option value="Depreciation charge - office equipment">Depreciation charge - office equipment</option>
+                                    <option value="Motor expenses">Motor expenses</option>
+                                    <option value="Irrecoverable debt">Irrecoverable debt</option>
+                                    <option value="Plant and machinery (carrying value)">Plant and machinery (carrying value)</option>
+                                    <option value="Discounts allowed">Discounts allowed</option>
+                                </select>
+                                <span id="t3_exp_lbl_5_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-cell-container">
+                                <input type="number" id="t3_exp_val_5" placeholder="Value">
+                                <span class="mark-badge">(1)</span>
+                                <span id="t3_exp_val_5_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="input-cell-container">
+                                <select id="t3_exp_lbl_6" class="blue-set">
+                                    <option value="">Select Description...</option>
+                                    <option value="Depreciation charge - plant and machinery">Depreciation charge - plant and machinery</option>
+                                    <option value="Heat and light">Heat and light</option>
+                                    <option value="Rent expense">Rent expense</option>
+                                    <option value="Office equipment (carrying value)">Office equipment (carrying value)</option>
+                                    <option value="Wages">Wages</option>
+                                    <option value="Rent received">Rent received</option>
+                                    <option value="Depreciation charge - office equipment">Depreciation charge - office equipment</option>
+                                    <option value="Motor expenses">Motor expenses</option>
+                                    <option value="Irrecoverable debt">Irrecoverable debt</option>
+                                    <option value="Plant and machinery (carrying value)">Plant and machinery (carrying value)</option>
+                                    <option value="Discounts allowed">Discounts allowed</option>
+                                </select>
+                                <span id="t3_exp_lbl_6_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-cell-container">
+                                <input type="number" id="t3_exp_val_6" placeholder="Value">
+                                <span class="mark-badge">(1)</span>
+                                <span id="t3_exp_val_6_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="input-cell-container">
+                                <select id="t3_exp_lbl_7" class="blue-set">
+                                    <option value="">Select Description...</option>
+                                    <option value="Depreciation charge - plant and machinery">Depreciation charge - plant and machinery</option>
+                                    <option value="Heat and light">Heat and light</option>
+                                    <option value="Rent expense">Rent expense</option>
+                                    <option value="Office equipment (carrying value)">Office equipment (carrying value)</option>
+                                    <option value="Wages">Wages</option>
+                                    <option value="Rent received">Rent received</option>
+                                    <option value="Depreciation charge - office equipment">Depreciation charge - office equipment</option>
+                                    <option value="Motor expenses">Motor expenses</option>
+                                    <option value="Irrecoverable debt">Irrecoverable debt</option>
+                                    <option value="Plant and machinery (carrying value)">Plant and machinery (carrying value)</option>
+                                    <option value="Discounts allowed">Discounts allowed</option>
+                                </select>
+                                <span id="t3_exp_lbl_7_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-cell-container">
+                                <input type="number" id="t3_exp_val_7" placeholder="Value">
+                                <span class="mark-badge">(1)</span>
+                                <span id="t3_exp_val_7_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="input-cell-container">
+                                <select id="t3_exp_lbl_8" class="blue-set">
+                                    <option value="">Select Description...</option>
+                                    <option value="Depreciation charge - plant and machinery">Depreciation charge - plant and machinery</option>
+                                    <option value="Heat and light">Heat and light</option>
+                                    <option value="Rent expense">Rent expense</option>
+                                    <option value="Office equipment (carrying value)">Office equipment (carrying value)</option>
+                                    <option value="Wages">Wages</option>
+                                    <option value="Rent received">Rent received</option>
+                                    <option value="Depreciation charge - office equipment">Depreciation charge - office equipment</option>
+                                    <option value="Motor expenses">Motor expenses</option>
+                                    <option value="Irrecoverable debt">Irrecoverable debt</option>
+                                    <option value="Plant and machinery (carrying value)">Plant and machinery (carrying value)</option>
+                                    <option value="Discounts allowed">Discounts allowed</option>
+                                </select>
+                                <span id="t3_exp_lbl_8_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-cell-container">
+                                <input type="number" id="t3_exp_val_8" placeholder="Value">
+                                <span class="mark-badge">(1)</span>
+                                <span id="t3_exp_val_8_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr style="font-weight: bold;">
+                        <td>Total Expenses</td>
+                        <td></td>
+                        <td>
+                            <div class="input-cell-container">
+                                <input type="number" id="t3_val_expenses_total" placeholder="Value">
+                                <span class="mark-badge">(1)</span>
+                                <span id="t3_val_expenses_total_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr style="font-weight: bold; background-color: #edf2f7;">
+                        <td>Profit/(loss) for the year</td>
+                        <td></td>
+                        <td>
+                            <div class="input-cell-container">
+                                <input type="number" id="t3_val_final_profit" placeholder="Value">
+                                <span class="mark-badge">(1)</span>
+                                <span id="t3_val_final_profit_fb" class="inline-status"></span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <button type="button" class="submit-trigger" onclick="evaluateConsolidationPortal()">Submit Assessment</button>
+    </form>
+
+    <div id="summaryPortal">
+        <h2>Performance Evaluation Metrics</h2>
+        <p><strong>Total Marks:</strong> <span id="portalMarkDisplay"></span> / 60</p>
+        <p><strong>Percentage:</strong> <span id="portalPercentageDisplay"></span>%</p>
+        <p><strong>Exam Result Classification:</strong> <span id="portalGradeDisplay"></span></p>
+        <p><em>Review the targeted validation entries embedded within each section module.</em></p>
+    </div>
+</div>
+
+<script>
+    const t1Schema = [
+        { name: "Opening equity (as at 01.01.Χ5)", bal: 5000, side: "credit" },
+        { name: "Drawings", bal: 12250, side: "debit" },
+        { name: "Plant and equipment", bal: 29380, side: "debit" },
+        { name: "Accumulated depreciation - Plant and equipment (31.12.X5)", bal: 11750, side: "credit" },
+        { name: "Trade receivables", bal: 8510, side: "debit" },
+        { name: "Trade payables", bal: 6130, side: "credit" },
+        { name: "Bank", bal: 4230, side: "debit" },
+        { name: "Depreciation charge - Plant and equipment", bal: 1750, side: "debit" },
+        { name: "Sales revenue", bal: 68750, side: "credit" },
+        { name: "Office expenses", bal: 5110, side: "debit" },
+        { name: "Wages and salaries", bal: 16630, side: "debit" },
+        { name: "Discounts received", bal: 180, side: "credit" },
+        { name: "Purchases", bal: 28650, side: "debit" },
+        { name: "Loan interest", bal: 300, side: "debit" },
+        { name: "Bank charges", bal: 150, side: "debit" },
+        { name: "Loan (repayable 31 December 20X9)", bal: 15000, side: "credit" },
+        { name: "Returns outwards", bal: 790, side: "credit" },
+        { name: "Returns inwards", bal: 640, side: "debit" }
+    ];
+
+    const t2Schema = [
+        { name: "Opening equity (as at 1 January 20X2)", bal: 26010, side: "credit" },
+        { name: "Purchases", bal: 4500, side: "debit" },
+        { name: "Sales revenue", bal: 9200, side: "credit" },
+        { name: "Returns inwards", bal: 50, side: "debit" },
+        { name: "Returns outwards", bal: 125, side: "credit" },
+        { name: "Wages", bal: 2595, side: "debit" },
+        { name: "Discounts allowed", bal: 225, side: "debit" },
+        { name: "Discounts received", bal: 135, side: "credit" },
+        { name: "Trade receivables", bal: 835, side: "debit" },
+        { name: "Trade payables", bal: 1375, side: "credit" },
+        { name: "Premises", bal: 22500, side: "debit" },
+        { name: "Fixtures and fittings", bal: 4450, side: "debit" },
+        { name: "Bank (overdrawn)", bal: 600, side: "credit" },
+        { name: "Irrecoverable debt", bal: 75, side: "debit" },
+        { name: "Carriage inwards", bal: 185, side: "debit" },
+        { name: "Inventory (as at 1 January 20X2)", bal: 1250, side: "debit" },
+        { name: "Carriage outwards", bal: 70, side: "debit" },
+        { name: "Office expenses", bal: 710, side: "debit" }
+    ];
+
+    window.onload = function() {
+        populateTrialBalanceTable('task1Body', t1Schema, 't1');
+        populateTrialBalanceTable('task2Body', t2Schema, 't2');
+    };
+
+    function populateTrialBalanceTable(elementId, schema, prefix) {
+        const tbody = document.getElementById(elementId);
+        schema.forEach((item, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${item.name}</td>
+                <td class="num-col">${item.bal}</td>
+                <td>
+                    <div class="input-cell-container">
+                        <input type="number" id="${prefix}_deb_${index}" placeholder="Dr">
+                        <span id="${prefix}_deb_${index}_fb" class="inline-status"></span>
+                    </div>
+                </td>
+                <td>
+                    <div class="input-cell-container">
+                        <input type="number" id="${prefix}_crd_${index}" placeholder="Cr">
+                        <span id="${prefix}_crd_${index}_fb" class="inline-status"></span>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    function verifyCell(element, fbElement, isCorrect, correctText) {
+        if (!element || !fbElement) return;
+        if (isCorrect) {
+            element.classList.remove('cell-incorrect');
+            element.classList.add('cell-correct');
+            fbElement.innerHTML = '<span class="c">&#10004;</span>';
+        } else {
+            element.classList.remove('cell-correct');
+            element.classList.add('cell-incorrect');
+            fbElement.innerHTML = `<span class="i">&#10008; (${correctText})</span>`;
+        }
+    }
+
+    function evaluateConsolidationPortal() {
+        let totalScore = 0;
+        const maxPossible = 60; 
+
+        // 1. Evaluate Task 1 Line by Line
+        t1Schema.forEach((item, index) => {
+            const drInput = document.getElementById(`t1_deb_${index}`);
+            const crInput = document.getElementById(`t1_crd_${index}`);
+            const drFb = document.getElementById(`t1_deb_${index}_fb`);
+            const crFb = document.getElementById(`t1_crd_${index}_fb`);
+            
+            const drVal = drInput.value.trim();
+            const crVal = crInput.value.trim();
+
+            if (item.side === 'debit') {
+                const isDrCorrect = (drVal == item.bal);
+                const isCrCorrect = (crVal === '');
+                verifyCell(drInput, drFb, isDrCorrect, item.bal);
+                verifyCell(crInput, crFb, isCrCorrect, "Empty");
+                if (isDrCorrect && isCrCorrect) totalScore += 1;
+            } else {
+                const isDrCorrect = (drVal === '');
+                const isCrCorrect = (crVal == item.bal);
+                verifyCell(drInput, drFb, isDrCorrect, "Empty");
+                verifyCell(crInput, crFb, isCrCorrect, item.bal);
+                if (isDrCorrect && isCrCorrect) totalScore += 1;
+            }
+        });
+
+        // Task 1 Totals
+        const t1DebTot = document.getElementById('t1_deb_total');
+        const t1CrdTot = document.getElementById('t1_crd_total');
+        const t1DebTotFb = document.getElementById('t1_deb_total_fb');
+        const t1CrdTotFb = document.getElementById('t1_crd_total_fb');
+        
+        const isT1DrTotCorrect = (t1DebTot.value.trim() == 107600);
+        const isT1CrTotCorrect = (t1CrdTot.value.trim() == 107600);
+        verifyCell(t1DebTot, t1DebTotFb, isT1DrTotCorrect, "107600");
+        verifyCell(t1CrdTot, t1CrdTotFb, isT1CrTotCorrect, "107600");
+        if (isT1DrTotCorrect) totalScore += 1;
+        if (isT1CrTotCorrect) totalScore += 1;
+
+
+        // 2. Evaluate Task 2 Line by Line
+        t2Schema.forEach((item, index) => {
+            const drInput = document.getElementById(`t2_deb_${index}`);
+            const crInput = document.getElementById(`t2_crd_${index}`);
+            const drFb = document.getElementById(`t2_deb_${index}_fb`);
+            const crFb = document.getElementById(`t2_crd_${index}_fb`);
+            
+            const drVal = drInput.value.trim();
+            const crVal = crInput.value.trim();
+
+            if (item.side === 'debit') {
+                const isDrCorrect = (drVal == item.bal);
+                const isCrCorrect = (crVal === '');
+                verifyCell(drInput, drFb, isDrCorrect, item.bal);
+                verifyCell(crInput, crFb, isCrCorrect, "Empty");
+                if (isDrCorrect && isCrCorrect) totalScore += 1;
+            } else {
+                const isDrCorrect = (drVal === '');
+                const isCrCorrect = (crVal == item.bal);
+                verifyCell(drInput, drFb, isDrCorrect, "Empty");
+                verifyCell(crInput, crFb, isCrCorrect, item.bal);
+                if (isDrCorrect && isCrCorrect) totalScore += 1;
+            }
+        });
+
+        // Task 2 Totals
+        const t2DebTot = document.getElementById('t2_deb_total');
+        const t2CrdTot = document.getElementById('t2_crd_total');
+        const t2DebTotFb = document.getElementById('t2_deb_total_fb');
+        const t2CrdTotFb = document.getElementById('t2_crd_total_fb');
+        
+        const isT2DrTotCorrect = (t2DebTot.value.trim() == 37445);
+        const isT2CrTotCorrect = (t2CrdTot.value.trim() == 37445);
+        verifyCell(t2DebTot, t2DebTotFb, isT2DrTotCorrect, "37445");
+        verifyCell(t2CrdTot, t2CrdTotFb, isT2CrTotCorrect, "37445");
+        if (isT2DrTotCorrect) totalScore += 1;
+        if (isT2CrTotCorrect) totalScore += 1;
+
+
+        // 3. Evaluate Task 3 (SOPL) - Structural Metrics Checks
+        function checkSOPLRow(lblId, valId, expectedLbl, expectedVal) {
+            const lblEl = document.getElementById(lblId);
+            const valEl = document.getElementById(valId);
+            const lblFb = document.getElementById(lblId + "_fb");
+            const valFb = document.getElementById(valId + "_fb");
+            
+            let rowValid = true;
+            if (lblEl && lblFb) {
+                const isLblCorrect = (lblEl.value === expectedLbl);
+                verifyCell(lblEl, lblFb, isLblCorrect, expectedLbl || "None");
+                if (!isLblCorrect) rowValid = false;
+            }
+            if (valEl && valFb) {
+                const isValCorrect = (valEl.value.trim() == expectedVal);
+                verifyCell(valEl, valFb, isValCorrect, expectedVal);
+                if (!isValCorrect) rowValid = false;
+            }
+            if (rowValid) totalScore += 1;
+        }
+
+        checkSOPLRow('t3_lbl_1', 't3_val_1', 'Sales revenue', '84379');
+        checkSOPLRow('t3_lbl_2', 't3_val_2', 'Returns inwards', '-1126');
+        checkSOPLRow('t3_lbl_3', 't3_val_3', 'Sales revenue', '83253');
+        checkSOPLRow('t3_lbl_5', 't3_val_5', 'Opening inventory', '2200');
+        checkSOPLRow('t3_lbl_6', 't3_val_6', 'Purchases', '21305');
+        checkSOPLRow('t3_lbl_7', 't3_val_7', 'Closing inventory', '-1650');
+        checkSOPLRow(null, 't3_val_8', null, '-21855');
+        checkSOPLRow(null, 't3_val_9', null, '61398');
+        checkSOPLRow('t3_lbl_11', 't3_val_11', 'Rent received', '2000');
+        checkSOPLRow(null, 't3_val_12', null, '63398');
+
+        // Dynamic Expense Mapping Block
+        const expectedExpensesPool = {
+            "Wages": 16758,
+            "Irrecoverable debt": 150,
+            "Motor expenses": 5236,
+            "Rent expense": 3000,
+            "Discounts allowed": 200,
+            "Heat and light": 1982,
+            "Depreciation charge - plant and machinery": 2420,
+            "Depreciation charge - office equipment": 1450
+        };
+
+        let matchedExpensesFlags = {};
+
+        for (let i = 1; i <= 8; i++) {
+            const lblEl = document.getElementById(`t3_exp_lbl_${i}`);
+            const valEl = document.getElementById(`t3_exp_val_${i}`);
+            const lblFb = document.getElementById(`t3_exp_lbl_${i}_fb`);
+            const valFb = document.getElementById(`t3_exp_val_${i}_fb`);
+            
+            const userLbl = lblEl.value;
+            const userVal = valEl.value.trim();
+
+            if (expectedExpensesPool[userLbl] && expectedExpensesPool[userLbl] == userVal && !matchedExpensesFlags[userLbl]) {
+                verifyCell(lblEl, lblFb, true, userLbl);
+                verifyCell(valEl, valFb, true, userVal);
+                matchedExpensesFlags[userLbl] = true;
+                totalScore += 1;
+            } else {
+                verifyCell(lblEl, lblFb, false, "Valid Expense Heading");
+                verifyCell(valEl, valFb, false, "Correct Ledger Value");
+            }
+        }
+
+        // Final Statement Totals
+        checkSOPLRow(null, 't3_val_expenses_total', null, '-31196');
+        checkSOPLRow(null, 't3_val_final_profit', null, '32202');
+
+
+        // Summary metrics engine computation
+        const percentageResult = Math.round((totalScore / maxPossible) * 100);
+        let finalGrade = "Fail";
+        let tierClass = "g-fail";
+
+        if (percentageResult >= 75) { finalGrade = "Distinction"; tierClass = "g-distinction"; } 
+        else if (percentageResult >= 60) { finalGrade = "Merit"; tierClass = "g-merit"; } 
+        else if (percentageResult >= 50) { finalGrade = "Pass"; tierClass = "g-pass"; }
+
+        document.getElementById('portalMarkDisplay').innerText = totalScore;
+        document.getElementById('portalPercentageDisplay').innerText = percentageResult;
+        
+        const displayGrade = document.getElementById('portalGradeDisplay');
+        displayGrade.innerText = finalGrade;
+        displayGrade.className = tierClass;
+
+        document.getElementById('summaryPortal').style.display = "block";
+        document.getElementById('summaryPortal').scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
