@@ -1076,9 +1076,9 @@
         let finalGrade = "Fail";
         let tierClass = "g-fail";
 
-        if (percentageResult >= 75) { finalGrade = "Distinction"; tierClass = "g-distinction"; } 
-        else if (percentageResult >= 60) { finalGrade = "Merit"; tierClass = "g-merit"; } 
-        else if (percentageResult >= 50) { finalGrade = "Pass"; tierClass = "g-pass"; }
+        if (percentageResult >= 90) { finalGrade = "Distinction"; tierClass = "g-distinction"; } 
+        else if (percentageResult >= 70) { finalGrade = "Merit"; tierClass = "g-merit"; } 
+        else if (percentageResult >= 60) { finalGrade = "Pass"; tierClass = "g-pass"; }
 
         document.getElementById('portalMarkDisplay').innerText = totalScore;
         document.getElementById('portalPercentageDisplay').innerText = percentageResult;
